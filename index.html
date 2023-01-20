@@ -4,6 +4,7 @@
 
 <head>
     <title>C語言生成</title>
+    <meta charset="utf-8">
     <style>
         body {
             color: #222324;
@@ -58,6 +59,12 @@
             font-size: 20px;
             font-family: sans-serif;
             user-select: all;
+            transition: all 0.12s ease-in-out;
+        }
+
+        .cCodeGen textarea:hover,
+        .cCodeGen textarea:focus {
+            border-color: #1780db;
         }
 
         .cCodeFooter {
@@ -164,22 +171,31 @@
                 reWords[words[i]] = i
         }
         function cEncode(e) {
+            if (e.length <= 0)
+                return ""
             let res = "C曰:"
             let tmp = btoa(encodeURIComponent(e))
             for (let i in tmp)
                 res += words[tmp[i]]
             return res
         }
-        function cDecode(e) {
+        function cDecode(t) {
             try {
-                let tmp1 = e.slice(3)
+                if (t.slice(0, 3) != "C曰:")
+                    return "不是合法的C語言"
+                let tmp1 = t.slice(3)
                 let tmp2 = ""
                 for (let i in tmp1)
                     tmp2 += reWords[tmp1[i]]
                 return decodeURIComponent(atob(tmp2))
             }
-            catch(e) {
-                return e
+            catch (e) {
+                let tmp3 = String(e)
+                if (tmp3.indexOf("Invalid") !== -1 ||
+                    tmp3.indexOf("URI") !== -1)
+                    return "不是合法的C語言"
+                else
+                    return e
             }
         }
 
@@ -188,12 +204,11 @@
         })
 
         ccode.addEventListener("change", (e) => {
-            try {
-                origin.value = cDecode(ccode.value)
-            }
-            catch (e) {
-                origin.value = e
-            }
+            origin.style.color = "#db2828"
+            origin.value = cDecode(ccode.value)
+            setTimeout(() => {
+                origin.style.color = "#222324"
+            }, 300)
         })
     </script>
 </body>
