@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>C語言生成</title>
+    <style>
+        body {
+            color: #222324;
+        }
+
+        .cCodeTitle {
+            position: relative;
+            display: block;
+            font-size: 28px;
+            font-weight: 300;
+            padding: 24px 36px;
+            padding-bottom: 0;
+        }
+
+        .cCodeHelp {
+            padding: 24px 36px;
+            padding-top: 10px;
+        }
+
+        .cCodeContainer {
+            max-width: 768px;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 50px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, .15), 0 8px 12px rgba(0, 0, 0, .07);
+        }
+
+        @media screen and (max-width: 768px) {
+            .cCodeContainer {
+                box-shadow: none;
+            }
+        }
+
+        .cCodeGen {
+            display: flex;
+        }
+
+        .cCodeGen textarea {
+            width: 50%;
+            height: 300px;
+            margin: 0;
+            padding: 8px 12px;
+            resize: none;
+            outline: none;
+            border-left: none;
+            border-top: 1px solid #aaa;
+            border-right: 1px solid #aaa;
+            border-bottom: 1px solid #aaa;
+            box-sizing: border-box;
+            font-weight: 300;
+            font-size: 20px;
+            font-family: sans-serif;
+            user-select: all;
+        }
+
+        .cCodeFooter {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+        }
+
+        .cCodeFooter a,
+        .cCodeFooter a:visited {
+            color: #222324;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="cCodeContainer">
+        <span class="cCodeTitle">
+            C語言生成
+        </span>
+        <div class="cCodeHelp">在左邊輸入原始文本，右邊實時顯示對應的C語言。或者在右邊輸入C語言，完成後點左邊顯示原始文本。</div>
+        <div class="cCodeGen">
+            <textarea id="origin" placeholder="輸入你想要轉成C語言的文段"></textarea>
+            <textarea id="ccode" placeholder="轉換好的C語言"></textarea>
+        </div>
+    </div>
+    <div class="cCodeFooter">
+        By <a href="https://github.com/yemaster" target="_blank">yemaster</a>
+    </div>
+
+    <script>
+        let origin = document.getElementById("origin"),
+            ccode = document.getElementById("ccode")
+        let words = {
+            "a": "喵",
+            "b": "？",
+            "c": "啊",
+            "d": "额",
+            "e": "嘟",
+            "f": "哦",
+            "g": "嘛",
+            "h": "吧",
+            "i": "嗄",
+            "j": "了",
+            "k": "嗷",
+            "l": "噢",
+            "m": "鹅",
+            "n": "恩",
+            "o": "吗",
+            "p": "呢",
+            "q": "啦",
+            "r": "咦",
+            "s": "哈",
+            "t": "哎",
+            "u": "哇",
+            "v": "唉",
+            "w": "嘎",
+            "x": "呐",
+            "y": "哒",
+            "z": "卟",
+            "A": "喽",
+            "B": "喔",
+            "C": "呜",
+            "D": "呒",
+            "E": "叻",
+            "F": "噗",
+            "G": "啵",
+            "H": "咩",
+            "I": "呱",
+            "J": "嗯",
+            "K": "汪",
+            "L": "咳",
+            "M": "吖",
+            "N": "哩",
+            "O": "哟",
+            "P": "呼",
+            "Q": "喃",
+            "R": "呵",
+            "S": "呗",
+            "T": "哼",
+            "U": "呃",
+            "V": "嗲",
+            "W": "/",
+            "X": "、",
+            "Y": ",",
+            "Z": ";",
+            "0": "?",
+            "1": "!",
+            "2": "*",
+            "3": "^",
+            "4": "&",
+            "5": "%",
+            "6": "$",
+            "7": "@",
+            "8": "；",
+            "9": "。",
+            "+": "，",
+            "/": "！",
+            "=": "唔",
+        }
+        let reWords = {}
+        for (let i in words) {
+            if (!(words[i] in reWords))
+                reWords[words[i]] = i
+        }
+        function cEncode(e) {
+            let res = "C曰:"
+            let tmp = btoa(encodeURIComponent(e))
+            for (let i in tmp)
+                res += words[tmp[i]]
+            return res
+        }
+        function cDecode(e) {
+            try {
+                let tmp1 = e.slice(3)
+                let tmp2 = ""
+                for (let i in tmp1)
+                    tmp2 += reWords[tmp1[i]]
+                return decodeURIComponent(atob(tmp2))
+            }
+            catch(e) {
+                return e
+            }
+        }
+
+        origin.addEventListener("input", (e) => {
+            ccode.value = cEncode(origin.value)
+        })
+
+        ccode.addEventListener("change", (e) => {
+            try {
+                origin.value = cDecode(ccode.value)
+            }
+            catch (e) {
+                origin.value = e
+            }
+        })
+    </script>
+</body>
+
+</html>
